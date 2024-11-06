@@ -97,16 +97,12 @@ class Program
         DateTime dateFrom = DateTime.Now.AddDays(-30);
         DateTime dateTo = DateTime.UtcNow;
 
-        // Format dates as ISO 8601 strings
-        string formattedDateFrom = dateFrom.ToString("yyyy-MM-ddTHH:mm:ssZ");
-        string formattedDateTo = dateTo.ToString("yyyy-MM-ddTHH:mm:ssZ");
-
         // Api call
         HttpClient client = SetupHttpClient(true);
 
         // Make the request with formatted date strings
         var response = await client.GetAsync(
-            $"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardid}/transactions?bookingStatus={bookingStatus}&dateFrom={formattedDateFrom}&dateTo={formattedDateTo}"
+            $"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardid}/transactions?bookingStatus={bookingStatus}&dateFrom={dateFrom}&dateTo={dateTo}"
         );
 
         var result = await response.Content.ReadAsStringAsync();
