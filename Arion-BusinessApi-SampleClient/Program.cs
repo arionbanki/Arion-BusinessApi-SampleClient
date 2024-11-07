@@ -130,7 +130,7 @@ class Program
         }
         else
         {
-            // todo, setup production client
+            // Will be added when Cards.Api is live
             return new HttpClient();
         }
     }
