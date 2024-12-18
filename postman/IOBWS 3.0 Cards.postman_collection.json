@@ -1,0 +1,2070 @@
+{
+	"info": {
+		"_postman_id": "862ad6ed-5350-41bc-a4b0-b23b24fe2abe",
+		"name": "IOBWS 3.0 Cards",
+		"description": "IOBWS 3.0 Cards\n\nContact Support:\n Name: Stadlarad Islands\n Email: openbanking@stadlar.is",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19964482",
+		"_collection_link": "https://fintech-arion.postman.co/workspace/d18915f1-2d5b-4a44-8d0c-7b9929b01410/collection/19964482-862ad6ed-5350-41bc-a4b0-b23b24fe2abe?action=share&source=collection_link&creator=19964482"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "cards",
+							"item": [
+								{
+									"name": "{cardId}",
+									"item": [
+										{
+											"name": "transactions",
+											"item": [
+												{
+													"name": "Read transaction list of a card.",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "{{apiKey}}",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId",
+																"transactions"
+															],
+															"query": [
+																{
+																	"key": "bookingStatus",
+																	"value": "<string>",
+																	"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																},
+																{
+																	"key": "dateFrom",
+																	"value": "<dateTime>",
+																	"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																},
+																{
+																	"key": "dateTo",
+																	"value": "<dateTime>",
+																	"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																}
+															],
+															"variable": [
+																{
+																	"key": "cardId",
+																	"value": "{{apiKey}}",
+																	"description": "(Required) This identification is denoting the addressed card. The card-id is retrieved by using a \\\"Read Card List\\\" call. The card-id is the \\\"resourceId\\\" attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent."
+																}
+															]
+														},
+														"description": "Reads transaction list or transaction report from a given card addressed by \\\"card-id\\\"."
+													},
+													"response": [
+														{
+															"name": "OK",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "OK",
+															"code": 200,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"card\": {\n    \"iban\": \"ZY52iv4sXNdL6aYS03ncBIjinb9Ua\",\n    \"bban\": \"rJyFz9Uzjiv1J\",\n    \"pan\": \"<string>\",\n    \"maskedPan\": \"<string>\",\n    \"msisdn\": \"<string>\",\n    \"currency\": \"YDC\"\n  },\n  \"cardTransactions\": {\n    \"booked\": [\n      {\n        \"transactionAmount\": {\n          \"_Amount\": \"9178547884009\",\n          \"currency\": \"GEM\"\n        },\n        \"cardTransactionId\": \"<string>\",\n        \"terminalId\": \"<string>\",\n        \"transactionDate\": \"<dateTime>\",\n        \"acceptorTransactionDateTime\": \"<dateTime>\",\n        \"bookingDate\": \"<dateTime>\",\n        \"currencyExchange\": [\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"HWP\",\n            \"targetCurrency\": \"JEY\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          },\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"QRR\",\n            \"targetCurrency\": \"DGV\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          }\n        ],\n        \"originalAmount\": {\n          \"_Amount\": \"-429626\",\n          \"currency\": \"UXR\"\n        },\n        \"markupFee\": {\n          \"_Amount\": \"72.3\",\n          \"currency\": \"DHK\"\n        },\n        \"markupFeePercentage\": \"<string>\",\n        \"cardAcceptorId\": \"<string>\",\n        \"cardAcceptorAddress\": {\n          \"country\": \"XA\",\n          \"streetName\": \"<string>\",\n          \"buildingNumber\": \"<string>\",\n          \"townName\": \"<string>\",\n          \"postCode\": \"<string>\"\n        },\n        \"cardAcceptorPhone\": \"+9-7)317312+141556299+497)764)-3\",\n        \"merchantCategoryCode\": \"<string>\",\n        \"maskedPAN\": \"<string>\",\n        \"transactionDetails\": \"<string>\",\n        \"posEntryMode\": \"MANUAL\",\n        \"invoiced\": \"<boolean>\",\n        \"proprietaryBankTransactionCode\": \"<string>\",\n        \"transactionAttachments\": {\n          \"links\": [\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            },\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            }\n          ],\n          \"keys\": {\n            \"cupidatat_f\": \"<string>\"\n          },\n          \"description\": \"<string>\"\n        }\n      },\n      {\n        \"transactionAmount\": {\n          \"_Amount\": \"988\",\n          \"currency\": \"IPD\"\n        },\n        \"cardTransactionId\": \"<string>\",\n        \"terminalId\": \"<string>\",\n        \"transactionDate\": \"<dateTime>\",\n        \"acceptorTransactionDateTime\": \"<dateTime>\",\n        \"bookingDate\": \"<dateTime>\",\n        \"currencyExchange\": [\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"WWN\",\n            \"targetCurrency\": \"AUG\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          },\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"KVO\",\n            \"targetCurrency\": \"PQY\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          }\n        ],\n        \"originalAmount\": {\n          \"_Amount\": \"-241648.276\",\n          \"currency\": \"WJC\"\n        },\n        \"markupFee\": {\n          \"_Amount\": \"76286\",\n          \"currency\": \"FGT\"\n        },\n        \"markupFeePercentage\": \"<string>\",\n        \"cardAcceptorId\": \"<string>\",\n        \"cardAcceptorAddress\": {\n          \"country\": \"ZB\",\n          \"streetName\": \"<string>\",\n          \"buildingNumber\": \"<string>\",\n          \"townName\": \"<string>\",\n          \"postCode\": \"<string>\"\n        },\n        \"cardAcceptorPhone\": \"+694-151586(4-905)945291-10(9+69\",\n        \"merchantCategoryCode\": \"<string>\",\n        \"maskedPAN\": \"<string>\",\n        \"transactionDetails\": \"<string>\",\n        \"posEntryMode\": \"MAGIC_STRIP\",\n        \"invoiced\": \"<boolean>\",\n        \"proprietaryBankTransactionCode\": \"<string>\",\n        \"transactionAttachments\": {\n          \"links\": [\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            },\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            }\n          ],\n          \"keys\": {\n            \"nostrudd8\": \"<string>\"\n          },\n          \"description\": \"<string>\"\n        }\n      }\n    ],\n    \"links\": {\n      \"sit_9_\": {\n        \"href\": \"<string>\"\n      },\n      \"ipsum_5b6\": {\n        \"href\": \"<string>\"\n      },\n      \"pariatur6f_\": {\n        \"href\": \"<string>\"\n      }\n    },\n    \"pending\": [\n      {\n        \"transactionAmount\": {\n          \"_Amount\": \"13\",\n          \"currency\": \"ZTX\"\n        },\n        \"cardTransactionId\": \"<string>\",\n        \"terminalId\": \"<string>\",\n        \"transactionDate\": \"<dateTime>\",\n        \"acceptorTransactionDateTime\": \"<dateTime>\",\n        \"bookingDate\": \"<dateTime>\",\n        \"currencyExchange\": [\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"TFC\",\n            \"targetCurrency\": \"KXD\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          },\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"DYZ\",\n            \"targetCurrency\": \"FSV\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          }\n        ],\n        \"originalAmount\": {\n          \"_Amount\": \"17935569557341.83\",\n          \"currency\": \"OJW\"\n        },\n        \"markupFee\": {\n          \"_Amount\": \"1.2\",\n          \"currency\": \"DGM\"\n        },\n        \"markupFeePercentage\": \"<string>\",\n        \"cardAcceptorId\": \"<string>\",\n        \"cardAcceptorAddress\": {\n          \"country\": \"XL\",\n          \"streetName\": \"<string>\",\n          \"buildingNumber\": \"<string>\",\n          \"townName\": \"<string>\",\n          \"postCode\": \"<string>\"\n        },\n        \"cardAcceptorPhone\": \"+177-6+(08915\",\n        \"merchantCategoryCode\": \"<string>\",\n        \"maskedPAN\": \"<string>\",\n        \"transactionDetails\": \"<string>\",\n        \"posEntryMode\": \"CHIP\",\n        \"invoiced\": \"<boolean>\",\n        \"proprietaryBankTransactionCode\": \"<string>\",\n        \"transactionAttachments\": {\n          \"links\": [\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            },\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            }\n          ],\n          \"keys\": {\n            \"sunt_73f\": \"<string>\",\n            \"quib\": \"<string>\"\n          },\n          \"description\": \"<string>\"\n        }\n      },\n      {\n        \"transactionAmount\": {\n          \"_Amount\": \"9578.0\",\n          \"currency\": \"EAT\"\n        },\n        \"cardTransactionId\": \"<string>\",\n        \"terminalId\": \"<string>\",\n        \"transactionDate\": \"<dateTime>\",\n        \"acceptorTransactionDateTime\": \"<dateTime>\",\n        \"bookingDate\": \"<dateTime>\",\n        \"currencyExchange\": [\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"QCW\",\n            \"targetCurrency\": \"JJG\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          },\n          {\n            \"exchangeRate\": \"<string>\",\n            \"quotationDate\": \"<dateTime>\",\n            \"sourceCurrency\": \"VVP\",\n            \"targetCurrency\": \"AIH\",\n            \"unitCurrency\": \"<string>\",\n            \"contractIdentification\": \"<string>\"\n          }\n        ],\n        \"originalAmount\": {\n          \"_Amount\": \"-8546480266984.05\",\n          \"currency\": \"EIC\"\n        },\n        \"markupFee\": {\n          \"_Amount\": \"8.96\",\n          \"currency\": \"VZH\"\n        },\n        \"markupFeePercentage\": \"<string>\",\n        \"cardAcceptorId\": \"<string>\",\n        \"cardAcceptorAddress\": {\n          \"country\": \"BG\",\n          \"streetName\": \"<string>\",\n          \"buildingNumber\": \"<string>\",\n          \"townName\": \"<string>\",\n          \"postCode\": \"<string>\"\n        },\n        \"cardAcceptorPhone\": \"+8-37682\",\n        \"merchantCategoryCode\": \"<string>\",\n        \"maskedPAN\": \"<string>\",\n        \"transactionDetails\": \"<string>\",\n        \"posEntryMode\": \"MOTO\",\n        \"invoiced\": \"<boolean>\",\n        \"proprietaryBankTransactionCode\": \"<string>\",\n        \"transactionAttachments\": {\n          \"links\": [\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            },\n            {\n              \"url\": {\n                \"href\": \"<string>\"\n              },\n              \"fileExtension\": \"<string>\"\n            }\n          ],\n          \"keys\": {\n            \"officiad6f\": \"<string>\",\n            \"Lorem5b8\": \"<string>\"\n          },\n          \"description\": \"<string>\"\n        }\n      }\n    ]\n  },\n  \"balances\": [\n    {\n      \"balanceAmount\": {\n        \"_Amount\": \"-94250126\",\n        \"currency\": \"GJC\"\n      },\n      \"balanceType\": \"expected\",\n      \"creditLimitIncluded\": \"<boolean>\",\n      \"lastChangeDateTime\": \"<dateTime>\",\n      \"referenceDate\": \"<dateTime>\",\n      \"lastCommittedTransaction\": \"<string>\"\n    },\n    {\n      \"balanceAmount\": {\n        \"_Amount\": \"9777833.5\",\n        \"currency\": \"YBV\"\n      },\n      \"balanceType\": \"closingBooked\",\n      \"creditLimitIncluded\": \"<boolean>\",\n      \"lastChangeDateTime\": \"<dateTime>\",\n      \"referenceDate\": \"<dateTime>\",\n      \"lastCommittedTransaction\": \"<string>\"\n    }\n  ]\n}"
+														},
+														{
+															"name": "Bad Request",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Bad Request",
+															"code": 400,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"CONSENT_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"cillum_731\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+														},
+														{
+															"name": "Unauthorized",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Unauthorized",
+															"code": 401,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"TOKEN_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"ERROR\",\n      \"code\": \"CERTIFICATE_EXPIRED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"dolor_4\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+														},
+														{
+															"name": "Forbidden",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Forbidden",
+															"code": 403,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"irure_b\": {\n      \"href\": \"<string>\"\n    },\n    \"do_53\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+														},
+														{
+															"name": "Not found",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Not Found",
+															"code": 404,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"ERROR\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"anim_f8\": {\n      \"href\": \"<string>\"\n    },\n    \"fugiat28\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+														},
+														{
+															"name": "Method Not Allowed",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Method Not Allowed",
+															"code": 405,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"SERVICE_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"SERVICE_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"in_c_\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+														},
+														{
+															"name": "Request Timeout",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Request Timeout",
+															"code": 408,
+															"_postman_previewlanguage": "text",
+															"header": [],
+															"cookie": [],
+															"body": ""
+														},
+														{
+															"name": "Unsupported Media Type",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Unsupported Media Type",
+															"code": 415,
+															"_postman_previewlanguage": "text",
+															"header": [],
+															"cookie": [],
+															"body": ""
+														},
+														{
+															"name": "Too Many Requests",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Accept",
+																		"value": "application/json"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Too Many Requests",
+															"code": 429,
+															"_postman_previewlanguage": "json",
+															"header": [
+																{
+																	"key": "Content-Type",
+																	"value": "application/json"
+																}
+															],
+															"cookie": [],
+															"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"ACCESS_EXCEEDED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"ACCESS_EXCEEDED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"eiusmodb\": {\n      \"href\": \"<string>\"\n    },\n    \"voluptate08\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+														},
+														{
+															"name": "Internal Server Error",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Internal Server Error",
+															"code": 500,
+															"_postman_previewlanguage": "text",
+															"header": [],
+															"cookie": [],
+															"body": ""
+														},
+														{
+															"name": "Service Unavailable",
+															"originalRequest": {
+																"method": "GET",
+																"header": [
+																	{
+																		"key": "xRequestID",
+																		"value": "<uuid>",
+																		"description": "ID of the request, unique to the call, as determined by the initiating party."
+																	},
+																	{
+																		"key": "Ocp-Apim-Subscription-Key",
+																		"value": "<string>",
+																		"description": "(Required) Azure API management subscription key"
+																	},
+																	{
+																		"key": "Authorization",
+																		"value": "<API Key>",
+																		"description": "Added as a part of security scheme: apikey"
+																	}
+																],
+																"url": {
+																	"raw": "{{baseUrl}}/api/v1/cards/:cardId/transactions?bookingStatus=<string>&dateFrom=<dateTime>&dateTo=<dateTime>",
+																	"host": [
+																		"{{baseUrl}}"
+																	],
+																	"path": [
+																		"api",
+																		"v1",
+																		"cards",
+																		":cardId",
+																		"transactions"
+																	],
+																	"query": [
+																		{
+																			"key": "bookingStatus",
+																			"value": "<string>",
+																			"description": "(Required) Permitted codes are   * \\\"information\\\",   * \\\"booked\\\",   * \\\"pending\\\", and   * \\\"both\\\" \\\"booked\\\" shall be supported by the Bank. To support the \\\"pending\\\" and \\\"both\\\" feature is optional for the Bank, Error code if not supported in the online banking frontend"
+																		},
+																		{
+																			"key": "dateFrom",
+																			"value": "<dateTime>",
+																			"description": "Conditional: Starting date (inclusive the date dateFrom) of the expected list, mandated if no delta access is required and if bookingStatus does not equal \\\"information.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		},
+																		{
+																			"key": "dateTo",
+																			"value": "<dateTime>",
+																			"description": "End date (inclusive the data dateTo) of the expected list, default is \\\"now\\\" if not given.  Might be ignored if a delta function is used.  The relevant date is usually the booking date of the instrument e.g. financial transaction or currency rate value date."
+																		}
+																	],
+																	"variable": [
+																		{
+																			"key": "cardId"
+																		}
+																	]
+																}
+															},
+															"status": "Service Unavailable",
+															"code": 503,
+															"_postman_previewlanguage": "text",
+															"header": [],
+															"cookie": [],
+															"body": ""
+														}
+													]
+												}
+											]
+										},
+										{
+											"name": "Read card details.",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "{{apiKey}}",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards",
+														":cardId"
+													],
+													"variable": [
+														{
+															"key": "cardId",
+															"value": "{{cardId}}",
+															"description": "(Required) This identification is denoting the addressed card. The card-id is retrieved by using a \\\"Read Card List\\\" call. The card-id is the \\\"resourceId\\\" attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent."
+														}
+													]
+												},
+												"description": "Reads details about a card. It is assumed that a consent of the user to this access is already given and stored on the Bank's system.  The addressed details of this account depends then on the stored consent addressed by consentId, respectively the OAuth2 access token.  Please note, that the current line of credit of a given card might be tighter than what the balance response will suggest, due to credit limits on the card account and transactions by other cards to the same account."
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"card\": {\n    \"cardholderName\": \"<string>\",\n    \"currency\": \"GJT\",\n    \"expDate\": \"10/14\",\n    \"maskedPan\": \"<string>\",\n    \"resourceId\": \"<string>\",\n    \"ownerName\": \"<string>\",\n    \"ownerId\": \"<string>\",\n    \"issueDate\": \"<dateTime>\",\n    \"cardholderId\": \"<string>\",\n    \"panId\": \"<string>\",\n    \"bank\": \"859\",\n    \"name\": \"<string>\",\n    \"displayName\": \"<string>\",\n    \"product\": \"<string>\",\n    \"status\": \"enabled\",\n    \"usage\": \"ORGA\",\n    \"details\": \"<string>\",\n    \"creditLimit\": {\n      \"_Amount\": \"-93935250662\",\n      \"currency\": \"HMV\"\n    },\n    \"balances\": [\n      {\n        \"balanceAmount\": {\n          \"_Amount\": \"5356849674.96\",\n          \"currency\": \"XSN\"\n        },\n        \"balanceType\": \"nonInvoiced\",\n        \"creditLimitIncluded\": \"<boolean>\",\n        \"lastChangeDateTime\": \"<dateTime>\",\n        \"referenceDate\": \"<dateTime>\",\n        \"lastCommittedTransaction\": \"<string>\"\n      },\n      {\n        \"balanceAmount\": {\n          \"_Amount\": \"-3118541784\",\n          \"currency\": \"IQE\"\n        },\n        \"balanceType\": \"nonInvoiced\",\n        \"creditLimitIncluded\": \"<boolean>\",\n        \"lastChangeDateTime\": \"<dateTime>\",\n        \"referenceDate\": \"<dateTime>\",\n        \"lastCommittedTransaction\": \"<string>\"\n      }\n    ],\n    \"links\": {\n      \"qui_d\": {\n        \"href\": \"<string>\"\n      },\n      \"commodo_0\": {\n        \"href\": \"<string>\"\n      }\n    }\n  }\n}"
+												},
+												{
+													"name": "Bad Request",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Bad Request",
+													"code": 400,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"CONSENT_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"cillum_731\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+												},
+												{
+													"name": "Unauthorized",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Unauthorized",
+													"code": 401,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"TOKEN_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"ERROR\",\n      \"code\": \"CERTIFICATE_EXPIRED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"dolor_4\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+												},
+												{
+													"name": "Forbidden",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Forbidden",
+													"code": 403,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"irure_b\": {\n      \"href\": \"<string>\"\n    },\n    \"do_53\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+												},
+												{
+													"name": "Not found",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"ERROR\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"anim_f8\": {\n      \"href\": \"<string>\"\n    },\n    \"fugiat28\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+												},
+												{
+													"name": "Method Not Allowed",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Method Not Allowed",
+													"code": 405,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"SERVICE_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"SERVICE_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"in_c_\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+												},
+												{
+													"name": "Request Timeout",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Request Timeout",
+													"code": 408,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												},
+												{
+													"name": "Unsupported Media Type",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Unsupported Media Type",
+													"code": 415,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												},
+												{
+													"name": "Too Many Requests",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Accept",
+																"value": "application/json"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Too Many Requests",
+													"code": 429,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"ACCESS_EXCEEDED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"ACCESS_EXCEEDED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"eiusmodb\": {\n      \"href\": \"<string>\"\n    },\n    \"voluptate08\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+												},
+												{
+													"name": "Internal Server Error",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Internal Server Error",
+													"code": 500,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												},
+												{
+													"name": "Service Unavailable",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "xRequestID",
+																"value": "<uuid>",
+																"description": "ID of the request, unique to the call, as determined by the initiating party."
+															},
+															{
+																"key": "Ocp-Apim-Subscription-Key",
+																"value": "<string>",
+																"description": "(Required) Azure API management subscription key"
+															},
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/v1/cards/:cardId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"v1",
+																"cards",
+																":cardId"
+															],
+															"variable": [
+																{
+																	"key": "cardId"
+																}
+															]
+														}
+													},
+													"status": "Service Unavailable",
+													"code": 503,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "Read list of cards.",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "MyTokenFromDeveloperPortal",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "xRequestID",
+												"value": "<uuid>",
+												"description": "ID of the request, unique to the call, as determined by the initiating party."
+											},
+											{
+												"key": "Ocp-Apim-Subscription-Key",
+												"value": "{{apiKey}}",
+												"description": "(Required) Azure API management subscription key"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/api/v1/cards",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"cards"
+											]
+										},
+										"description": "Reads a list of cards potentially with additional information, e.g. balance information.  It is assumed that a consent of the user to this access is already given and stored on the Bank's system. The addressed list of cards depends then on the stored consent addressed by consentId, respectively the OAuth2 access token.  Please note, that the current line of credit of a given card might be tighter than what the balance response will suggest, due to credit limits on the card account and transactions by other cards to the same account."
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"cards\": [\n    {\n      \"cardholderName\": \"<string>\",\n      \"currency\": \"FFF\",\n      \"expDate\": \"11/52\",\n      \"maskedPan\": \"<string>\",\n      \"resourceId\": \"<string>\",\n      \"ownerName\": \"<string>\",\n      \"ownerId\": \"<string>\",\n      \"issueDate\": \"<dateTime>\",\n      \"cardholderId\": \"<string>\",\n      \"panId\": \"<string>\",\n      \"bank\": \"2591\",\n      \"name\": \"<string>\",\n      \"displayName\": \"<string>\",\n      \"product\": \"<string>\",\n      \"status\": \"blocked\",\n      \"usage\": \"PRIV\",\n      \"details\": \"<string>\",\n      \"creditLimit\": {\n        \"_Amount\": \"-972801\",\n        \"currency\": \"HXO\"\n      },\n      \"balances\": [\n        {\n          \"balanceAmount\": {\n            \"_Amount\": \"603031118\",\n            \"currency\": \"XEE\"\n          },\n          \"balanceType\": \"forwardAvailable\",\n          \"creditLimitIncluded\": \"<boolean>\",\n          \"lastChangeDateTime\": \"<dateTime>\",\n          \"referenceDate\": \"<dateTime>\",\n          \"lastCommittedTransaction\": \"<string>\"\n        },\n        {\n          \"balanceAmount\": {\n            \"_Amount\": \"04765428117.660\",\n            \"currency\": \"WPN\"\n          },\n          \"balanceType\": \"nonInvoiced\",\n          \"creditLimitIncluded\": \"<boolean>\",\n          \"lastChangeDateTime\": \"<dateTime>\",\n          \"referenceDate\": \"<dateTime>\",\n          \"lastCommittedTransaction\": \"<string>\"\n        }\n      ],\n      \"links\": {\n        \"occaecatcc5\": {\n          \"href\": \"<string>\"\n        }\n      }\n    },\n    {\n      \"cardholderName\": \"<string>\",\n      \"currency\": \"ZKT\",\n      \"expDate\": \"02/63\",\n      \"maskedPan\": \"<string>\",\n      \"resourceId\": \"<string>\",\n      \"ownerName\": \"<string>\",\n      \"ownerId\": \"<string>\",\n      \"issueDate\": \"<dateTime>\",\n      \"cardholderId\": \"<string>\",\n      \"panId\": \"<string>\",\n      \"bank\": \"602\",\n      \"name\": \"<string>\",\n      \"displayName\": \"<string>\",\n      \"product\": \"<string>\",\n      \"status\": \"enabled\",\n      \"usage\": \"PRIV\",\n      \"details\": \"<string>\",\n      \"creditLimit\": {\n        \"_Amount\": \"58802\",\n        \"currency\": \"IUD\"\n      },\n      \"balances\": [\n        {\n          \"balanceAmount\": {\n            \"_Amount\": \"3\",\n            \"currency\": \"RHM\"\n          },\n          \"balanceType\": \"expected\",\n          \"creditLimitIncluded\": \"<boolean>\",\n          \"lastChangeDateTime\": \"<dateTime>\",\n          \"referenceDate\": \"<dateTime>\",\n          \"lastCommittedTransaction\": \"<string>\"\n        },\n        {\n          \"balanceAmount\": {\n            \"_Amount\": \"-531727790.5\",\n            \"currency\": \"XDV\"\n          },\n          \"balanceType\": \"expected\",\n          \"creditLimitIncluded\": \"<boolean>\",\n          \"lastChangeDateTime\": \"<dateTime>\",\n          \"referenceDate\": \"<dateTime>\",\n          \"lastCommittedTransaction\": \"<string>\"\n        }\n      ],\n      \"links\": {\n        \"sed5\": {\n          \"href\": \"<string>\"\n        },\n        \"do_be2\": {\n          \"href\": \"<string>\"\n        }\n      }\n    }\n  ]\n}"
+										},
+										{
+											"name": "Bad Request",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Bad Request",
+											"code": 400,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"CONSENT_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"cillum_731\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+										},
+										{
+											"name": "Unauthorized",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Unauthorized",
+											"code": 401,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"TOKEN_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"ERROR\",\n      \"code\": \"CERTIFICATE_EXPIRED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"dolor_4\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+										},
+										{
+											"name": "Forbidden",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Forbidden",
+											"code": 403,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"irure_b\": {\n      \"href\": \"<string>\"\n    },\n    \"do_53\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+										},
+										{
+											"name": "Not found",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"ERROR\",\n      \"code\": \"RESOURCE_UNKNOWN\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"anim_f8\": {\n      \"href\": \"<string>\"\n    },\n    \"fugiat28\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+										},
+										{
+											"name": "Method Not Allowed",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Method Not Allowed",
+											"code": 405,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"SERVICE_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"SERVICE_INVALID\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"in_c_\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+										},
+										{
+											"name": "Request Timeout",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Request Timeout",
+											"code": 408,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Unsupported Media Type",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Unsupported Media Type",
+											"code": 415,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Too Many Requests",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Accept",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Too Many Requests",
+											"code": 429,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"messages\": [\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"ACCESS_EXCEEDED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    },\n    {\n      \"category\": \"WARNING\",\n      \"code\": \"ACCESS_EXCEEDED\",\n      \"path\": \"<string>\",\n      \"text\": \"<string>\"\n    }\n  ],\n  \"links\": {\n    \"eiusmodb\": {\n      \"href\": \"<string>\"\n    },\n    \"voluptate08\": {\n      \"href\": \"<string>\"\n    }\n  }\n}"
+										},
+										{
+											"name": "Internal Server Error",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Internal Server Error",
+											"code": 500,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										},
+										{
+											"name": "Service Unavailable",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "xRequestID",
+														"value": "<uuid>",
+														"description": "ID of the request, unique to the call, as determined by the initiating party."
+													},
+													{
+														"key": "Ocp-Apim-Subscription-Key",
+														"value": "<string>",
+														"description": "(Required) Azure API management subscription key"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/v1/cards",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"v1",
+														"cards"
+													]
+												}
+											},
+											"status": "Service Unavailable",
+											"code": 503,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{apiKey}}",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
