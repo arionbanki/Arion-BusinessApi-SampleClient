@@ -1,11 +1,10 @@
 {
 	"info": {
-		"_postman_id": "862ad6ed-5350-41bc-a4b0-b23b24fe2abe",
+		"_postman_id": "d63f4412-b2d4-47f6-8293-3fa7e8a54b9f",
 		"name": "IOBWS 3.0 Cards",
 		"description": "IOBWS 3.0 Cards\n\nContact Support:\n Name: Stadlarad Islands\n Email: openbanking@stadlar.is",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "19964482",
-		"_collection_link": "https://fintech-arion.postman.co/workspace/d18915f1-2d5b-4a44-8d0c-7b9929b01410/collection/19964482-862ad6ed-5350-41bc-a4b0-b23b24fe2abe?action=share&source=collection_link&creator=19964482"
+		"_exporter_id": "19964482"
 	},
 	"item": [
 		{
@@ -26,6 +25,16 @@
 												{
 													"name": "Read transaction list of a card.",
 													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "MyTokenFromDeveloperPortal",
+																	"type": "string"
+																}
+															]
+														},
 														"method": "GET",
 														"header": [
 															{
@@ -75,7 +84,7 @@
 															"variable": [
 																{
 																	"key": "cardId",
-																	"value": "{{apiKey}}",
+																	"value": "{{cardId}}",
 																	"description": "(Required) This identification is denoting the addressed card. The card-id is retrieved by using a \\\"Read Card List\\\" call. The card-id is the \\\"resourceId\\\" attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent."
 																}
 															]
@@ -857,6 +866,16 @@
 										{
 											"name": "Read card details.",
 											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "MyTokenFromDeveloperPortal",
+															"type": "string"
+														}
+													]
+												},
 												"method": "GET",
 												"header": [
 													{
