@@ -39,11 +39,11 @@ class Program
         Console.WriteLine("3) Sandbox - Get Cards Balances");
         Console.WriteLine("4) Sandbox - Get Cards Transactions");
         Console.WriteLine("==== IOBWS 3.0 Claims");
-        Console.WriteLine("5) Sandbox - Get Claim From Id");
-        Console.WriteLine("6) Sandbox - Get Claim From Id History");
-        Console.WriteLine("7) Sandbox - Get Claim From Id Transactions");
-        Console.WriteLine("8) Sandbox - Get Claims");
-        Console.WriteLine("9) Sandbox - Get Batches From Id");
+        Console.WriteLine("5) Live - Get Claim From Id");
+        Console.WriteLine("6) Live - Get Claim From Id History");
+        Console.WriteLine("7) Live - Get Claim From Id Transactions");
+        Console.WriteLine("8) Live - Get Claims");
+        Console.WriteLine("9) Live - Get Batches From Id");
         Console.Write("\r\nSelect an option: ");
 
         switch (Console.ReadLine())
@@ -61,19 +61,19 @@ class Program
                 await SandboxGetCardTransactions();
                 return true;
             case "5":
-                await SandboxGetClaimFromId();
+                await GetClaimFromId();
                 return true;
             case "6":
-                await SandboxGetClaimFromIdHistory();
+                await GetClaimFromIdHistory();
                 return true;
             case "7":
-                await SandboxGetClaimFromIdTransactions();
+                await GetClaimFromIdTransactions();
                 return true;
             case "8":
-                await SandboxGetClaims();
+                await GetClaims();
                 return true;
             case "9":
-                await SandboxBatchFromId();
+                await BatchFromId();
                 return true;
             default:
                 return true;
@@ -141,7 +141,7 @@ class Program
     }
     #endregion
     #region Claims
-    private static async Task SandboxGetClaimFromId()
+    private static async Task GetClaimFromId()
     {
         // Build Request
         string claimId = CLAIM_ID;
@@ -153,7 +153,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task SandboxGetClaimFromIdHistory()
+    private static async Task GetClaimFromIdHistory()
     {
         // Build Request
         string claimId = CLAIM_ID;
@@ -165,7 +165,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task SandboxGetClaimFromIdTransactions()
+    private static async Task GetClaimFromIdTransactions()
     {
         // Build Request
         string claimId = CLAIM_ID;
@@ -177,7 +177,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task SandboxGetClaims()
+    private static async Task GetClaims()
     {
         // Build Request
 
@@ -188,7 +188,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task SandboxBatchFromId()
+    private static async Task BatchFromId()
     {
         // Build Request
         string batchId = BATCH_ID;
