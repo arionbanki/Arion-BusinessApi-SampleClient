@@ -183,7 +183,7 @@ class Program
 
         // Api call
         HttpClient client = SetupHttpClaimsClient();
-        var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={DATE_FROM}&dateTo={DATE_TO}&claimantId={CLAIM_ID.Take(10)}&page=1&itemsPerPage=500");
+        var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={DATE_FROM}&dateTo={DATE_TO}&claimantId={CLAIM_ID.Substring(0, 10)}&page=1&itemsPerPage=500");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
