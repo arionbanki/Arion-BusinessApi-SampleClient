@@ -12,7 +12,7 @@ class Program
     private static readonly string SANDBOX_CARD_ID = "[Place your sandbox card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
 
     // Base path to claims API
-    private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw-dev.arionbanki.is/claimstemp/api/v1";
+    private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw-dev.arionbanki.is/claims/api/v1";
 
     // Config these variables to your needs
     private static readonly string CLAIM_API_ACCESS_TOKEN = "[Place your token from the identity service in here]"; // you can retrieve this token from the identity service
