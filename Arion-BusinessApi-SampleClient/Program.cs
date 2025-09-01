@@ -24,6 +24,7 @@ class Program
 
     // Authorization for Claims API
     private static readonly string CLAIMS_TOKEN_URL = "https://isit-identity-tokenservice-api-main.prod.service.arionbanki.is/v2/oauth-token"; // Token url to identity service
+    private static readonly string YOUR_CERTIFICATE = "[Place your certificate in here]"; // This is the certificate you will use to authenticate to the identity service
     private static readonly string CLIENT_ID = "[Place your client id here]";
     private static readonly string CLIENT_SECRET = "[Place your client secret here]";
     private static readonly string CLIENT_SCOPES = "[Place your client scopes here]";
@@ -102,7 +103,6 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-
     private static async Task SandboxGetCardsFromId()
     {
         // Build Request
@@ -115,7 +115,6 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-
     private static async Task SandboxGetCardBalances()
     {
         // Build Request
@@ -129,7 +128,6 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-
     private static async Task SandboxGetCardTransactions()
     {
         // Build Request
@@ -247,15 +245,16 @@ class Program
         };
 
         // Get token from curity
-        HttpClient client = new();
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("x-forwarded-tls-client-cert", YOUR_CERTIFICATE);
         var res = await client.PostAsync(CLAIMS_TOKEN_URL, new FormUrlEncodedContent(nvc));
         var json = await res.Content.ReadAsStringAsync();
         var token = JsonSerializer.Deserialize<Token>(json);
 
         // Fetch certificate from store
-        X509Store store = new(StoreLocation.CurrentUser);
+        var store = new X509Store(StoreLocation.CurrentUser);
         store.Open(OpenFlags.ReadOnly);
-        X509Certificate2Collection cers = store.Certificates.Find(X509FindType.FindBySubjectName, "[enter subject name]", false);
+        var cers = store.Certificates.Find(X509FindType.FindBySubjectName, "[enter subject name]", false);
 
         // Adding certificate to handler
         var handler = new HttpClientHandler();
