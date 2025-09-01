@@ -1,4 +1,6 @@
 ﻿using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 class Program
@@ -12,14 +14,22 @@ class Program
     private static readonly string SANDBOX_CARD_ID = "[Place your sandbox card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
 
     // Base path to claims API
-    private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw-dev.arionbanki.is/claims/api/v1";
+    private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw.arionbanki.is/claims/api/v1";
 
     // Config these variables to your needs
-    private static readonly string CLAIM_API_ACCESS_TOKEN = "[Place your token from the identity service in here]"; // you can retrieve this token from the identity service
     private static readonly string CLAIM_ID = "[Place the claim id here]"; // this is returned from endpoint /api/v1/claims/{claimId} "resourceId"
     private static readonly string BATCH_ID = "[Place the batch id here]"; // this is returned from endpoint /api/v1/batches/{batchId} "resourceId"
     private static readonly string DATE_FROM = "YYYY-mm-dd"; // this is the date from when records will be taken "YYYY-mm-dd"
     private static readonly string DATE_TO = "YYYY-mm-dd"; // this is the date from when records will be taken "YYYY-mm-dd"
+
+    // Authorization for Claims API
+    private static readonly string CLAIMS_TOKEN_URL = "https://isit-identity-tokenservice-api-main.prod.service.arionbanki.is/v2/oauth-token"; // Token url to identity service
+    private static readonly string CLIENT_ID = "[Place your client id here]";
+    private static readonly string CLIENT_SECRET = "[Place your client secret here]";
+    private static readonly string CLIENT_SCOPES = "[Place your client scopes here]";
+
+    // UserApplication api key obtained from Developer Portal
+    private static readonly string APIKEY = "[Place your ApiKey from the developer portal in here]";
 
     static async Task Main(string[] args)
     {
@@ -80,7 +90,6 @@ class Program
         }
     }
 
-    #region Sandbox Endpoints
     #region Cards
     private static async Task SandboxGetCards()
     {
@@ -147,7 +156,7 @@ class Program
         string claimId = CLAIM_ID;
 
         // Api call
-        HttpClient client = SetupHttpClaimsClient();
+        HttpClient client = await SetupHttpClaimsClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}");
 
         // Results
@@ -159,7 +168,7 @@ class Program
         string claimId = CLAIM_ID;
 
         // Api call
-        HttpClient client = SetupHttpClaimsClient();
+        HttpClient client = await SetupHttpClaimsClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}/history?page=1&itemsPerPage=500");
 
         // Results
@@ -171,7 +180,7 @@ class Program
         string claimId = CLAIM_ID;
 
         // Api call
-        HttpClient client = SetupHttpClaimsClient();
+        HttpClient client = await SetupHttpClaimsClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}/transactions?page=1&itemsPerPage=500");
 
         // Results
@@ -182,7 +191,7 @@ class Program
         // Build Request
 
         // Api call
-        HttpClient client = SetupHttpClaimsClient();
+        HttpClient client = await SetupHttpClaimsClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={DATE_FROM}&dateTo={DATE_TO}&claimantId={CLAIM_ID.Substring(0, 10)}&page=1&itemsPerPage=500");
 
         // Results
@@ -194,14 +203,13 @@ class Program
         string batchId = BATCH_ID;
 
         // Api call
-        HttpClient client = SetupHttpClaimsClient();
+        HttpClient client = await SetupHttpClaimsClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/batches/{batchId}");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
     #endregion
-    #endregion Sandbox Endpoints
 
     #region Helpers
     private static HttpClient SetupHttpCardsClient(bool sandbox)
@@ -209,7 +217,7 @@ class Program
         if (sandbox)
         {
             // Get HttpClient
-            HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new();
 
             // Set headers
             httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SANDBOX_API_KEY);
@@ -228,19 +236,44 @@ class Program
         }
     }
 
-    private static HttpClient SetupHttpClaimsClient()
+    private static async Task<HttpClient> SetupHttpClaimsClient()
     {
+        var nvc = new List<KeyValuePair<string, string>>
+        {
+            new("grant_type", "client_credentials"),
+            new("client_id", CLIENT_ID),
+            new("client_secret", CLIENT_SECRET),
+            new("scope", CLIENT_SCOPES)
+        };
+
+        // Get token from curity
+        HttpClient client = new();
+        var res = await client.PostAsync(CLAIMS_TOKEN_URL, new FormUrlEncodedContent(nvc));
+        var json = await res.Content.ReadAsStringAsync();
+        var token = JsonSerializer.Deserialize<Token>(json);
+
+        // Fetch certificate from store
+        X509Store store = new(StoreLocation.CurrentUser);
+        store.Open(OpenFlags.ReadOnly);
+        X509Certificate2Collection cers = store.Certificates.Find(X509FindType.FindBySubjectName, "[enter subject name]", false);
+
+        // Adding certificate to handler
+        var handler = new HttpClientHandler();
+        handler.ClientCertificates.Add(cers[0]);
+        store.Close();
+
         // Get HttpClient
-        HttpClient httpClient = new HttpClient();
+        var clientWithCertificate = new HttpClient(handler);
 
         // Set headers
-        httpClient.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString());
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        clientWithCertificate.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString());
+        clientWithCertificate.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKEY); // Azure Apim Subscription key
+        clientWithCertificate.DefaultRequestHeaders.Add("Accept", "application/json");
 
         // Set bearer token
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CLAIM_API_ACCESS_TOKEN); // Bearer token
+        clientWithCertificate.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token?.AccessToken);
 
-        return httpClient;
+        return clientWithCertificate;
     }
 
     internal class Token
