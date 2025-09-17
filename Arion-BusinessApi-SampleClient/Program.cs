@@ -267,8 +267,8 @@ class Program
         var clientWithCertificate = new HttpClient(handler);
 
         // Set headers
-        clientWithCertificate.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString()); // Azure Apim Subscription key
-        clientWithCertificate.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKEY); // Azure Apim Subscription key
+        clientWithCertificate.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString());
+        clientWithCertificate.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKEY);
         clientWithCertificate.DefaultRequestHeaders.Add("Accept", "application/json");
 
         // Set bearer token
