@@ -17,7 +17,7 @@ class Program
     private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw-test.arionbanki.is/claims/api/v1";
 
     // Config these variables to your needs
-    private static readonly string CLAIM_ID = "[Place the claim id here"; // this is returned from endpoint /api/v1/claims/{claimId} "resourceId"
+    private static readonly string CLAIM_ID = "[Place the claim id here]"; // this is returned from endpoint /api/v1/claims/{claimId} "resourceId"
     private static readonly string BATCH_ID = "[Place the batch id here]"; // this is returned from endpoint /api/v1/batches/{batchId} "resourceId"
     private static readonly string DATE_FROM = "[Place the date from here]"; // this is the date from when records will be taken "YYYY-mm-dd"
     private static readonly string DATE_TO = "[Place the date to here]"; // this is the date from when records will be taken "YYYY-mm-dd"
@@ -243,16 +243,20 @@ class Program
             new("scope", CLIENT_SCOPES)
         };
 
-        // Get token from curity
-        var client = new HttpClient();
-        var res = await client.PostAsync(CLAIMS_TOKEN_URL, new FormUrlEncodedContent(nvc));
-        var json = await res.Content.ReadAsStringAsync();
-        var token = JsonSerializer.Deserialize<Token>(json);
-
         // Fetch certificate from store
         var store = new X509Store(StoreLocation.CurrentUser);
         store.Open(OpenFlags.ReadOnly);
-        var cers = store.Certificates.Find(X509FindType.FindBySubjectName, "[Place the certificate name here]", false);
+        var cers = store.Certificates.Find(X509FindType.FindBySubjectName, "[Enter subject name]", false);
+
+        // Get token from curity
+        var tokenClientHandler = new HttpClientHandler();
+        tokenClientHandler.ClientCertificates.Add(cers[0]);
+        var client = new HttpClient(tokenClientHandler);
+        var res = await client.PostAsync(CLAIMS_TOKEN_URL, new FormUrlEncodedContent(nvc));
+        tokenClientHandler.Dispose();
+        client.Dispose();
+        var json = await res.Content.ReadAsStringAsync();
+        var token = JsonSerializer.Deserialize<Token>(json);
 
         // Adding certificate to handler
         var handler = new HttpClientHandler();
