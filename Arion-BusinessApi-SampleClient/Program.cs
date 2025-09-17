@@ -14,7 +14,7 @@ class Program
     private static readonly string SANDBOX_CARD_ID = "[Place your sandbox card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
 
     // Base path to claims API
-    private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw-test.arionbanki.is/claims/api/v1";
+    private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw.arionbanki.is/claims/api/v1";
 
     // Config these variables to your needs
     private static readonly string CLAIM_ID = "[Place the claim id here]"; // this is returned from endpoint /api/v1/claims/{claimId} "resourceId"
@@ -23,7 +23,7 @@ class Program
     private static readonly string DATE_TO = "[Place the date to here]"; // this is the date from when records will be taken "YYYY-mm-dd"
 
     // Authorization for Claims API
-    private static readonly string CLAIMS_TOKEN_URL = "https://apigw-test.arionbanki.is/oauth/v2/oauth-token"; // url to identity token service
+    private static readonly string CLAIMS_TOKEN_URL = "https://apigw.arionbanki.is/oauth/v2/oauth-token"; // url to identity token service
     private static readonly string CLIENT_ID = "[Place client id here]";
     private static readonly string CLIENT_SECRET = "[Place client secret here]";
     private static readonly string CLIENT_SCOPES = "[Place client scopes here]";
