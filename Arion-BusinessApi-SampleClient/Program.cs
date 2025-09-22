@@ -100,19 +100,19 @@ class Program
                 await LiveGetCardTransactions();
                 return true;
             case "9":
-                await GetClaimFromId();
+                await LiveGetClaimFromId();
                 return true;
             case "10":
-                await GetClaimFromIdHistory();
+                await LiveGetClaimFromIdHistory();
                 return true;
             case "11":
-                await GetClaimFromIdTransactions();
+                await LiveGetClaimFromIdTransactions();
                 return true;
             case "12":
-                await GetClaims();
+                await LiveGetClaims();
                 return true;
             case "13":
-                await BatchFromId();
+                await LiveBatchFromId();
                 return true;
             default:
                 return true;
@@ -232,7 +232,7 @@ class Program
     }
     #endregion
     #region Claims
-    private static async Task GetClaimFromId()
+    private static async Task LiveGetClaimFromId()
     {
         // Build Request
         string claimId = CLAIM_ID;
@@ -244,7 +244,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task GetClaimFromIdHistory()
+    private static async Task LiveGetClaimFromIdHistory()
     {
         // Build Request
         string claimId = CLAIM_ID;
@@ -256,7 +256,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task GetClaimFromIdTransactions()
+    private static async Task LiveGetClaimFromIdTransactions()
     {
         // Build Request
         string claimId = CLAIM_ID;
@@ -268,7 +268,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task GetClaims()
+    private static async Task LiveGetClaims()
     {
         // Build Request
 
@@ -279,7 +279,7 @@ class Program
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task BatchFromId()
+    private static async Task LiveBatchFromId()
     {
         // Build Request
         string batchId = BATCH_ID;
