@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 class Program
 {
+    #region Cards Sandbox Configuration
     // Base path to cards sandbox API
     private static readonly string IOBWS_SANDBOX_BASE_PATH = "https://apigwsandbox.arionbanki.is/cards/api/v1";
 
@@ -12,7 +13,16 @@ class Program
     private static readonly string SANDBOX_ACCESS_TOKEN = "[Place your token from the developer portal in here]"; // you can create this token in the developer portal for your application
     private static readonly string SANDBOX_API_KEY = "[Place your ApiKey from developer portal here]";
     private static readonly string SANDBOX_CARD_ID = "[Place your sandbox card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
+    #endregion
 
+    #region Cards Live Configuration
+    // Base path to cards sandbox API
+    private static readonly string IOBWS_LIVE_BASE_PATH = "https://apigw.arionbanki.is/cards/api/v1";
+
+    private static readonly string CARD_ID = "[Place your card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
+    #endregion
+
+    #region Claims Live Configuration
     // Base path to claims API
     private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw.arionbanki.is/claims/api/v1";
 
@@ -21,15 +31,18 @@ class Program
     private static readonly string BATCH_ID = "[Place the batch id here]"; // this is returned from endpoint /api/v1/batches/{batchId} "resourceId"
     private static readonly string DATE_FROM = "[Place the date from here]"; // this is the date from when records will be taken "YYYY-mm-dd"
     private static readonly string DATE_TO = "[Place the date to here]"; // this is the date from when records will be taken "YYYY-mm-dd"
+    #endregion
 
-    // Authorization for Claims API
-    private static readonly string CLAIMS_TOKEN_URL = "https://apigw.arionbanki.is/oauth/v2/oauth-token"; // url to identity token service
+    #region Auth Configuration
+    // Authorization API
+    private static readonly string AUTH_TOKEN_URL = "https://apigw.arionbanki.is/oauth/v2/oauth-token"; // url to oauth token service
     private static readonly string CLIENT_ID = "[Place client id here]";
     private static readonly string CLIENT_SECRET = "[Place client secret here]";
     private static readonly string CLIENT_SCOPES = "[Place client scopes here]";
 
     // UserApplication api key obtained from Developer Portal
     private static readonly string APIKEY = "[Place api key here]";
+    #endregion
 
     static async Task Main(string[] args)
     {
@@ -48,12 +61,16 @@ class Program
         Console.WriteLine("2) Sandbox - Get Cards From Id");
         Console.WriteLine("3) Sandbox - Get Cards Balances");
         Console.WriteLine("4) Sandbox - Get Cards Transactions");
+        Console.WriteLine("5) Live - Get Cards");
+        Console.WriteLine("6) Live - Get Cards From Id");
+        Console.WriteLine("7) Live - Get Cards Balances");
+        Console.WriteLine("8) Live - Get Cards Transactions");
         Console.WriteLine("==== IOBWS 3.0 Claims");
-        Console.WriteLine("5) Live - Get Claim From Id");
-        Console.WriteLine("6) Live - Get Claim From Id History");
-        Console.WriteLine("7) Live - Get Claim From Id Transactions");
-        Console.WriteLine("8) Live - Get Claims");
-        Console.WriteLine("9) Live - Get Batches From Id");
+        Console.WriteLine("9) Live - Get Claim From Id");
+        Console.WriteLine("10) Live - Get Claim From Id History");
+        Console.WriteLine("11) Live - Get Claim From Id Transactions");
+        Console.WriteLine("12) Live - Get Claims");
+        Console.WriteLine("13) Live - Get Batches From Id");
         Console.Write("\r\nSelect an option: ");
 
         switch (Console.ReadLine())
@@ -71,32 +88,44 @@ class Program
                 await SandboxGetCardTransactions();
                 return true;
             case "5":
-                await GetClaimFromId();
+                await LiveGetCards();
                 return true;
             case "6":
-                await GetClaimFromIdHistory();
+                await LiveGetCardsFromId();
                 return true;
             case "7":
-                await GetClaimFromIdTransactions();
+                await LiveGetCardBalances();
                 return true;
             case "8":
-                await GetClaims();
+                await LiveGetCardTransactions();
                 return true;
             case "9":
-                await BatchFromId();
+                await LiveGetClaimFromId();
+                return true;
+            case "10":
+                await LiveGetClaimFromIdHistory();
+                return true;
+            case "11":
+                await LiveGetClaimFromIdTransactions();
+                return true;
+            case "12":
+                await LiveGetClaims();
+                return true;
+            case "13":
+                await LiveBatchFromId();
                 return true;
             default:
                 return true;
         }
     }
 
-    #region Cards
+    #region Cards Sandbox
     private static async Task SandboxGetCards()
     {
         // Build Request
 
         // Api call
-        HttpClient client = SetupHttpCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards");
 
         // Results
@@ -108,7 +137,7 @@ class Program
         string cardId = SANDBOX_CARD_ID;
 
         // Api call
-        HttpClient client = SetupHttpCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardId}");
 
         // Results
@@ -118,10 +147,10 @@ class Program
     {
         // Build Request
         string cardid = SANDBOX_CARD_ID;
-        DateTime today = DateTime.Now.AddDays(-30);
+        DateTime today = DateTime.UtcNow.AddDays(-30);
 
         // Api call
-        HttpClient client = SetupHttpCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardid}/balances?dateFrom={today}");
 
         // Results
@@ -132,11 +161,11 @@ class Program
         // Build Request
         string cardid = SANDBOX_CARD_ID;
         string bookingStatus = "booked";
-        DateTime dateFrom = DateTime.Now.AddDays(-30);
+        DateTime dateFrom = DateTime.UtcNow.AddDays(-30);
         DateTime dateTo = DateTime.UtcNow;
 
         // Api call
-        HttpClient client = SetupHttpCardsClient(true);
+        var client = SetupHttpSandboxClient();
 
         // Make the request with formatted date strings
         var response = await client.GetAsync(
@@ -146,61 +175,117 @@ class Program
         var result = await response.Content.ReadAsStringAsync();
     }
     #endregion
+    #region Cards Live
+    private static async Task LiveGetCards()
+    {
+        // Build Request
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetCardsFromId()
+    {
+        // Build Request
+        string cardId = CARD_ID;
+
+        // Api call
+        var client = SetupHttpSandboxClient();
+        var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards/{cardId}");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetCardBalances()
+    {
+        // Build Request
+        string cardid = CARD_ID;
+        DateTime today = DateTime.UtcNow.AddDays(-30);
+
+        // Api call
+        var client = SetupHttpSandboxClient();
+        var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards/{cardid}/balances?dateFrom={today}");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetCardTransactions()
+    {
+        // Build Request
+        string cardid = CARD_ID;
+        string bookingStatus = "booked";
+        DateTime dateFrom = DateTime.UtcNow.AddDays(-30);
+        DateTime dateTo = DateTime.UtcNow;
+
+        // Api call
+        var client = SetupHttpSandboxClient();
+
+        // Make the request with formatted date strings
+        var response = await client.GetAsync(
+            $"{IOBWS_LIVE_BASE_PATH}/cards/{cardid}/transactions?bookingStatus={bookingStatus}&dateFrom={dateFrom}&dateTo={dateTo}"
+        );
+
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    #endregion
     #region Claims
-    private static async Task GetClaimFromId()
+    private static async Task LiveGetClaimFromId()
     {
         // Build Request
         string claimId = CLAIM_ID;
 
         // Api call
-        var client = await SetupHttpClaimsClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task GetClaimFromIdHistory()
+    private static async Task LiveGetClaimFromIdHistory()
     {
         // Build Request
         string claimId = CLAIM_ID;
 
         // Api call
-        var client = await SetupHttpClaimsClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}/history?page=1&itemsPerPage=500");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task GetClaimFromIdTransactions()
+    private static async Task LiveGetClaimFromIdTransactions()
     {
         // Build Request
         string claimId = CLAIM_ID;
 
         // Api call
-        var client = await SetupHttpClaimsClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}/transactions?page=1&itemsPerPage=500");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task GetClaims()
+    private static async Task LiveGetClaims()
     {
         // Build Request
 
         // Api call
-        var client = await SetupHttpClaimsClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={DATE_FROM}&dateTo={DATE_TO}&claimantId={CLAIM_ID[..10]}&page=1&itemsPerPage=500");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
     }
-    private static async Task BatchFromId()
+    private static async Task LiveBatchFromId()
     {
         // Build Request
         string batchId = BATCH_ID;
 
         // Api call
-        var client = await SetupHttpClaimsClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/batches/{batchId}");
 
         // Results
@@ -209,31 +294,23 @@ class Program
     #endregion
 
     #region Helpers
-    private static HttpClient SetupHttpCardsClient(bool sandbox)
+    private static HttpClient SetupHttpSandboxClient()
     {
-        if (sandbox)
-        {
-            // Get HttpClient
-            HttpClient httpClient = new();
+        // Get HttpClient
+        HttpClient httpClient = new();
 
-            // Set headers
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SANDBOX_API_KEY);
-            httpClient.DefaultRequestHeaders.Add("xRequestId", Guid.NewGuid().ToString());
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        // Set headers
+        httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SANDBOX_API_KEY);
+        httpClient.DefaultRequestHeaders.Add("xRequestId", Guid.NewGuid().ToString());
+        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 
-            // Set bearer token
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SANDBOX_ACCESS_TOKEN); // Bearer token
+        // Set bearer token
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SANDBOX_ACCESS_TOKEN); // Bearer token
 
-            return httpClient;
-        }
-        else
-        {
-            // Will be added when Cards.Api is live
-            return new HttpClient();
-        }
+        return httpClient;
     }
 
-    private static async Task<HttpClient> SetupHttpClaimsClient()
+    private static async Task<HttpClient> SetupHttpLiveClient()
     {
         var nvc = new List<KeyValuePair<string, string>>
         {
@@ -252,7 +329,7 @@ class Program
         var tokenClientHandler = new HttpClientHandler();
         tokenClientHandler.ClientCertificates.Add(cers[0]);
         var client = new HttpClient(tokenClientHandler);
-        var res = await client.PostAsync(CLAIMS_TOKEN_URL, new FormUrlEncodedContent(nvc));
+        var res = await client.PostAsync(AUTH_TOKEN_URL, new FormUrlEncodedContent(nvc));
         tokenClientHandler.Dispose();
         client.Dispose();
         var json = await res.Content.ReadAsStringAsync();
