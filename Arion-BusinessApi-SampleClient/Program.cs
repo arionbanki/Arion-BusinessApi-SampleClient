@@ -125,7 +125,7 @@ class Program
         // Build Request
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards");
 
         // Results
@@ -137,7 +137,7 @@ class Program
         string cardId = SANDBOX_CARD_ID;
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardId}");
 
         // Results
@@ -147,10 +147,10 @@ class Program
     {
         // Build Request
         string cardid = SANDBOX_CARD_ID;
-        DateTime today = DateTime.Now.AddDays(-30);
+        DateTime today = DateTime.UtcNow.AddDays(-30);
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardid}/balances?dateFrom={today}");
 
         // Results
@@ -161,11 +161,11 @@ class Program
         // Build Request
         string cardid = SANDBOX_CARD_ID;
         string bookingStatus = "booked";
-        DateTime dateFrom = DateTime.Now.AddDays(-30);
+        DateTime dateFrom = DateTime.UtcNow.AddDays(-30);
         DateTime dateTo = DateTime.UtcNow;
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
 
         // Make the request with formatted date strings
         var response = await client.GetAsync(
@@ -181,7 +181,7 @@ class Program
         // Build Request
 
         // Api call
-        var client = await SetupHttpOauthClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards");
 
         // Results
@@ -193,7 +193,7 @@ class Program
         string cardId = CARD_ID;
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards/{cardId}");
 
         // Results
@@ -203,10 +203,10 @@ class Program
     {
         // Build Request
         string cardid = CARD_ID;
-        DateTime today = DateTime.Now.AddDays(-30);
+        DateTime today = DateTime.UtcNow.AddDays(-30);
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards/{cardid}/balances?dateFrom={today}");
 
         // Results
@@ -217,11 +217,11 @@ class Program
         // Build Request
         string cardid = CARD_ID;
         string bookingStatus = "booked";
-        DateTime dateFrom = DateTime.Now.AddDays(-30);
+        DateTime dateFrom = DateTime.UtcNow.AddDays(-30);
         DateTime dateTo = DateTime.UtcNow;
 
         // Api call
-        var client = SetupHttpSandboxCardsClient(true);
+        var client = SetupHttpSandboxClient();
 
         // Make the request with formatted date strings
         var response = await client.GetAsync(
@@ -238,7 +238,7 @@ class Program
         string claimId = CLAIM_ID;
 
         // Api call
-        var client = await SetupHttpOauthClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}");
 
         // Results
@@ -250,7 +250,7 @@ class Program
         string claimId = CLAIM_ID;
 
         // Api call
-        var client = await SetupHttpOauthClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}/history?page=1&itemsPerPage=500");
 
         // Results
@@ -262,7 +262,7 @@ class Program
         string claimId = CLAIM_ID;
 
         // Api call
-        var client = await SetupHttpOauthClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims/{claimId}/transactions?page=1&itemsPerPage=500");
 
         // Results
@@ -273,7 +273,7 @@ class Program
         // Build Request
 
         // Api call
-        var client = await SetupHttpOauthClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={DATE_FROM}&dateTo={DATE_TO}&claimantId={CLAIM_ID[..10]}&page=1&itemsPerPage=500");
 
         // Results
@@ -285,7 +285,7 @@ class Program
         string batchId = BATCH_ID;
 
         // Api call
-        var client = await SetupHttpOauthClient();
+        var client = await SetupHttpLiveClient();
         var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/batches/{batchId}");
 
         // Results
@@ -294,31 +294,23 @@ class Program
     #endregion
 
     #region Helpers
-    private static HttpClient SetupHttpSandboxCardsClient(bool sandbox)
+    private static HttpClient SetupHttpSandboxClient()
     {
-        if (sandbox)
-        {
-            // Get HttpClient
-            HttpClient httpClient = new();
+        // Get HttpClient
+        HttpClient httpClient = new();
 
-            // Set headers
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SANDBOX_API_KEY);
-            httpClient.DefaultRequestHeaders.Add("xRequestId", Guid.NewGuid().ToString());
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        // Set headers
+        httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SANDBOX_API_KEY);
+        httpClient.DefaultRequestHeaders.Add("xRequestId", Guid.NewGuid().ToString());
+        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 
-            // Set bearer token
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SANDBOX_ACCESS_TOKEN); // Bearer token
+        // Set bearer token
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SANDBOX_ACCESS_TOKEN); // Bearer token
 
-            return httpClient;
-        }
-        else
-        {
-            // Will be added when Cards.Api is live
-            return new HttpClient();
-        }
+        return httpClient;
     }
 
-    private static async Task<HttpClient> SetupHttpOauthClient()
+    private static async Task<HttpClient> SetupHttpLiveClient()
     {
         var nvc = new List<KeyValuePair<string, string>>
         {
