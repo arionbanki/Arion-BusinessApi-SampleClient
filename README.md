@@ -10,11 +10,23 @@ Reads a list of cards potentially with additional information, e.g. balance info
 ### 2. api/v1/cards/{cardId}
 Reads details about a card.
 
-### 3. api/v1/cards/{cardid}/balances
-Not implemented.
-
-### 4. api/v1/cards/{cardid}/transactions
+### 3. api/v1/cards/{cardid}/transactions
 Reads transaction list or transaction report from a given card addressed by "card-id".
+
+### 4. api/v1/claims/{claimId}
+Reads detail information for a single claim by claimId.
+
+### 5. api/v1/claims/{claimId}/history
+Reads claim history containing every event for the claim from the beginning.
+
+### 6. api/v1/claims/{claimId}/transactions
+Reads all claim payments by claimId.
+
+### 7. api/v1/claims
+Reads a list of claims.
+
+### 8. api/v1/batches/{batchId}
+Reads status of a batch by batchId.
 
 # Arion's Open Banking platform
 

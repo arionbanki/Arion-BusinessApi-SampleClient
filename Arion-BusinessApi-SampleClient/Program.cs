@@ -59,59 +59,51 @@ class Program
         Console.WriteLine("==== IOBWS 3.0 Cards");
         Console.WriteLine("1) Sandbox - Get Cards");
         Console.WriteLine("2) Sandbox - Get Cards From Id");
-        Console.WriteLine("3) Sandbox - Get Cards Balances");
-        Console.WriteLine("4) Sandbox - Get Cards Transactions");
-        Console.WriteLine("5) Live - Get Cards");
-        Console.WriteLine("6) Live - Get Cards From Id");
-        Console.WriteLine("7) Live - Get Cards Balances");
-        Console.WriteLine("8) Live - Get Cards Transactions");
+        Console.WriteLine("3) Sandbox - Get Cards Transactions");
+        Console.WriteLine("4) Live - Get Cards");
+        Console.WriteLine("5) Live - Get Cards From Id");
+        Console.WriteLine("6) Live - Get Cards Transactions");
         Console.WriteLine("==== IOBWS 3.0 Claims");
-        Console.WriteLine("9) Live - Get Claim From Id");
-        Console.WriteLine("10) Live - Get Claim From Id History");
-        Console.WriteLine("11) Live - Get Claim From Id Transactions");
-        Console.WriteLine("12) Live - Get Claims");
-        Console.WriteLine("13) Live - Get Batches From Id");
+        Console.WriteLine("7) Live - Get Claim From Id");
+        Console.WriteLine("8) Live - Get Claim From Id History");
+        Console.WriteLine("9) Live - Get Claim From Id Transactions");
+        Console.WriteLine("10) Live - Get Claims");
+        Console.WriteLine("11) Live - Get Batches From Id");
         Console.Write("\r\nSelect an option: ");
 
         switch (Console.ReadLine())
         {
             case "1":
-                await SandboxGetCards();          
+                await SandboxGetCards();
                 return true;
             case "2":
                 await SandboxGetCardsFromId();
                 return true;
             case "3":
-                await SandboxGetCardBalances();
-                return true;
-            case "4":
                 await SandboxGetCardTransactions();
                 return true;
-            case "5":
+            case "4":
                 await LiveGetCards();
                 return true;
-            case "6":
+            case "5":
                 await LiveGetCardsFromId();
                 return true;
-            case "7":
-                await LiveGetCardBalances();
-                return true;
-            case "8":
+            case "6":
                 await LiveGetCardTransactions();
                 return true;
-            case "9":
+            case "7":
                 await LiveGetClaimFromId();
                 return true;
-            case "10":
+            case "8":
                 await LiveGetClaimFromIdHistory();
                 return true;
-            case "11":
+            case "9":
                 await LiveGetClaimFromIdTransactions();
                 return true;
-            case "12":
+            case "10":
                 await LiveGetClaims();
                 return true;
-            case "13":
+            case "11":
                 await LiveBatchFromId();
                 return true;
             default:
@@ -139,19 +131,6 @@ class Program
         // Api call
         var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardId}");
-
-        // Results
-        var result = await response.Content.ReadAsStringAsync();
-    }
-    private static async Task SandboxGetCardBalances()
-    {
-        // Build Request
-        string cardid = SANDBOX_CARD_ID;
-        DateTime today = DateTime.UtcNow.AddDays(-30);
-
-        // Api call
-        var client = SetupHttpSandboxClient();
-        var response = await client.GetAsync($"{IOBWS_SANDBOX_BASE_PATH}/cards/{cardid}/balances?dateFrom={today}");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
@@ -195,19 +174,6 @@ class Program
         // Api call
         var client = SetupHttpSandboxClient();
         var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards/{cardId}");
-
-        // Results
-        var result = await response.Content.ReadAsStringAsync();
-    }
-    private static async Task LiveGetCardBalances()
-    {
-        // Build Request
-        string cardid = CARD_ID;
-        DateTime today = DateTime.UtcNow.AddDays(-30);
-
-        // Api call
-        var client = SetupHttpSandboxClient();
-        var response = await client.GetAsync($"{IOBWS_LIVE_BASE_PATH}/cards/{cardid}/balances?dateFrom={today}");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
