@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Globalization;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -31,6 +32,24 @@ class Program
     private static readonly string BATCH_ID = "[Place the batch id here]"; // this is returned from endpoint /api/v1/batches/{batchId} "resourceId"
     private static readonly string DATE_FROM = "[Place the date from here]"; // this is the date from when records will be taken "YYYY-mm-dd"
     private static readonly string DATE_TO = "[Place the date to here]"; // this is the date from when records will be taken "YYYY-mm-dd"
+    #endregion
+    
+    #region Documents Live Configuration
+    // Base path to claims API
+    private static readonly string IOBWS_DOCUMENTS_BASE_PATH = "https://apigw.arionbanki.is/documents/api/v1";
+
+    // Config these variables to your needs
+    private static readonly string DOCUMENT_ID = "[Place the document id here]"; // The Id of the document you are managing
+    private static readonly string OWNER_ID = "[Place the owner id here]"; // Kennitala of the owner of the document
+    private static readonly string SENDER_ID = "[Place the sender id here]"; // Kennitala of the sender of the document
+    private static readonly string DOCUMENT_KEY = "[Place the document key here]"; // Key to the document
+    private static readonly string DOCUMENT_KEY_TYPE = "[Place the document key type here]"; // Document key type, one of these: Claim, CreditTransfer, PaymentRequest
+    private static readonly string DOCUMENT_STORE = "[Place the document store here]"; // Document store, the location where the document is stored, one of these: Ark, RBS
+    private static readonly string DOCUMENT_CATEGORY = "[Place the document category here]"; // Document category, one of these: AccountStatement, PaymentForm, Bill, CreditCard, Payslip, Password, InterestNote, SalarySlip, TransactionStatement, PaymentNotification, Report, Receipt, Notification, TimeSheet, CollectionLetter, WarningLetter, Reminder, Other
+    private static readonly string DOCUMENT_DATE_FROM = "[Place the date from here]"; // this is the date from when documents will be queried "YYYY-mm-dd"
+    private static readonly string DOCUMENT_DATE_TO = "[Place the date to here]"; // this is the date from when documents will be queried "YYYY-mm-dd"
+    private static readonly string DOCUMENT_ORDERING = "[Place the ordering here]"; // DESC or ASC
+    private static readonly string STYLE_SHEET_NAME = "[Place the style sheet name here]"; // Style sheet name for the document.
     #endregion
 
     #region Auth Configuration
@@ -71,6 +90,18 @@ class Program
         Console.WriteLine("11) Live - Get Claim From Id Transactions");
         Console.WriteLine("12) Live - Get Claims");
         Console.WriteLine("13) Live - Get Batches From Id");
+        Console.WriteLine("==== IOBWS 3.0 Documents");
+        Console.WriteLine("14) Live - Get Documents");
+        Console.WriteLine("15) Live - Get Document by owner and Id");
+        Console.WriteLine("16) Live - Get Document types by sender");
+        Console.WriteLine("17) Live - Post Pdf Document");
+        Console.WriteLine("18) Live - Post Xml Document");
+        Console.WriteLine("19) Live - Get Cross-Reference by document Id");
+        Console.WriteLine("20) Live - Get Cross-Reference by key and key-type");
+        Console.WriteLine("21) Live - Post Cross-References");
+        Console.WriteLine("22) Live - Put Cross-References");
+        Console.WriteLine("23) Live - Delete Cross-Reference");
+        
         Console.Write("\r\nSelect an option: ");
 
         switch (Console.ReadLine())
@@ -113,6 +144,36 @@ class Program
                 return true;
             case "13":
                 await LiveBatchFromId();
+                return true;
+            case "14":
+                await LiveGetDocuments();
+                return true;
+            case "15":
+                await LiveGetDocumentByOwnerAndId();
+                return true;
+            case "16":
+                await LiveGetDocumentTypesBySender();
+                return true;
+            case "17":
+                await LivePostPdfDocument();
+                return true;
+            case "18":
+                await LivePostXmlDocument();
+                return true;
+            case "19":
+                await LiveGetCrossReferenceByDocumentId();
+                return true;
+            case "20":
+                await LiveGetCrossReferenceByKeyAndKeyType();
+                return true;
+            case "21":
+                await LivePostCrossReferences();
+                return true;
+            case "22":
+                await LivePutCrossReferences();
+                return true;
+            case "23":
+                await LiveDeleteCrossReference();
                 return true;
             default:
                 return true;
@@ -292,6 +353,204 @@ class Program
         var result = await response.Content.ReadAsStringAsync();
     }
     #endregion
+    #region Documents
+    private static async Task LiveGetDocuments()
+    {
+        // Build Request
+        string senderKennitala = SENDER_ID;
+        string ownerKennitala = OWNER_ID;
+        string dateFrom = DOCUMENT_DATE_FROM;
+        string dateTo = DOCUMENT_DATE_TO;
+        string order = DOCUMENT_ORDERING;
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.GetAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/documents?SenderKennitala={senderKennitala}&OwnerKennitala={ownerKennitala}&DateFrom={dateFrom}&DateTo={dateTo}&Ordering={order}&Page=1&ItemsPerPage=10");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetDocumentByOwnerAndId()
+    {
+        // Build Request
+        string ownerKennitala = OWNER_ID;
+        string documentId = DOCUMENT_ID;
+        string documentStore = DOCUMENT_STORE; // Optional query parameter
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.GetAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/documents/{ownerKennitala}/{documentId}?documentStore={documentStore}");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetDocumentTypesBySender()
+    {
+        // Build Request
+        string senderKennitala = SENDER_ID;
+        string documentStore = DOCUMENT_STORE; // Optional query parameter
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.GetAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/documents/{senderKennitala}/types?documentStore={documentStore}");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LivePostPdfDocument()
+    {
+        // Build Request
+        string uuid = Guid.NewGuid().ToString();
+        string senderKennitala = SENDER_ID;
+        string ownerKennitala = OWNER_ID;
+        string styleSheetName = STYLE_SHEET_NAME;
+        DateTime date = DateTime.UtcNow;
+        string pdfFileName = "document.pdf"; // a document you have to add into the folder
+        
+        string jsonBody = CreatePdf(uuid, senderKennitala, ownerKennitala, styleSheetName, date, pdfFileName);
+        var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.PostAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/documents", content);
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LivePostXmlDocument()
+    {
+        // Build Request
+        string uuid = Guid.NewGuid().ToString();
+        string senderKennitala = SENDER_ID;
+        string ownerKennitala = OWNER_ID;
+        string styleSheetName = STYLE_SHEET_NAME;
+        string definitionName = "Synidaemi";
+        DateTime date = DateTime.UtcNow;
+        
+        string jsonBody = CreateXml(uuid, senderKennitala, ownerKennitala, styleSheetName, definitionName, date);
+        var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.PostAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/documents", content);
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetCrossReferenceByDocumentId()
+    {
+        // Build Request
+        string documentId = DOCUMENT_ID;
+        string documentStore = DOCUMENT_STORE;
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.GetAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/crossreferences?DocumentStore={documentStore}&DocumentId={documentId}&");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveGetCrossReferenceByKeyAndKeyType()
+    {
+        // Build Request
+        string key = DOCUMENT_KEY;
+        string keyType = DOCUMENT_KEY_TYPE;
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.GetAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/crossreferences?Key={key}&KeyType={keyType}&");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LivePostCrossReferences()
+    {
+        // Build Request
+        string key = DOCUMENT_KEY;
+        string keyType = DOCUMENT_KEY_TYPE;
+        string documentId = DOCUMENT_ID;
+        string documentStore = DOCUMENT_STORE;
+        string documentCategory = DOCUMENT_CATEGORY;
+        DateTime date = DateTime.UtcNow;
+        string documentDescription = "Test document description";
+        string externalEventId = "event_1234";
+
+        var body = new[]
+        {
+            new
+            {
+                Key = key,
+                KeyType = keyType,
+                DocumentId = documentId,
+                DocumentStore = documentStore,
+                DocumentCategory = documentCategory,
+                DocumentEffectiveDate = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                DocumentDescription = documentDescription,
+                ExternalEventId = externalEventId
+            }
+        };
+        var jsonBody = JsonSerializer.Serialize(body);
+        var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
+        
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.PostAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/crossreferences", content);
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LivePutCrossReferences()
+    {
+        // Build Request
+        string documentId = DOCUMENT_ID;
+        // Edit any of the following values to update the document cross-reference
+        string key = DOCUMENT_KEY;
+        string keyType = DOCUMENT_KEY_TYPE;
+        string documentStore = DOCUMENT_STORE;
+        string documentCategory = DOCUMENT_CATEGORY;
+        DateTime date = DateTime.UtcNow;
+        string documentDescription = "Test document description";
+        string externalEventId = "event_1234";
+
+        var body = new[]
+        {
+            new
+            {
+                Key = key,
+                KeyType = keyType,
+                DocumentId = documentId,
+                DocumentStore = documentStore,
+                DocumentCategory = documentCategory,
+                DocumentEffectiveDate = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                DocumentDescription = documentDescription,
+                ExternalEventId = externalEventId
+            }
+        };
+        var jsonBody = JsonSerializer.Serialize(body);
+        var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
+        
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.PutAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/crossreferences", content);
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    private static async Task LiveDeleteCrossReference()
+    {
+        // Build Request
+        string documentId = DOCUMENT_ID;
+        string key = DOCUMENT_KEY;
+        string keyType = DOCUMENT_KEY_TYPE;
+
+        // Api call
+        var client = await SetupHttpLiveClient();
+        var response = await client.DeleteAsync($"{IOBWS_DOCUMENTS_BASE_PATH}/crossreferences/{documentId}/{keyType}/{key}");
+
+        // Results
+        var result = await response.Content.ReadAsStringAsync();
+    }
+    #endregion
 
     #region Helpers
     private static HttpClient SetupHttpSandboxClient()
@@ -368,7 +627,88 @@ class Program
         [JsonPropertyName("scope")]
         public string? Scope { get; set; }
     }
+    
+    public static string CreateXml(
+        string uuid,
+        string senderKennitala,
+        string ownerKennitala,
+        string styleSheetName,
+        string definitionName,
+        DateTime date)
+    {
+        var dateString = date.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture);
+        var body = new
+        {
+            SenderKennitala = senderKennitala,
+            DocumentTypeCode = "ARTS",
+            DocumentStore = "Ark",
+            EffectiveDate = date,
+            StyleSheetName = styleSheetName,
 
+            Files = new[]
+            {
+                new 
+                {
+                    Id = uuid,
+                    Description = "This is a XML document for testing",
+                    ReceiverKennitala = ownerKennitala,
+                    FileType = "XML",
+                    File = $"""
+                            <?xml version="1.0" encoding="utf-8"?>
+                            <!DOCTYPE XML-S SYSTEM "XML-S.dtd">
+                            <XML-S>
+                                <Statement Acct="{senderKennitala}{ownerKennitala}" Date="{dateString}" XKey="2">
+                                    <?bgls.BlueGill.com DefinitionName={definitionName}?>
+                                    <?bgls.BlueGill.com User1={senderKennitala}?>
+                                    <?bgls.BlueGill.com User3={styleSheetName}?>
+                                    <?bgls.BlueGill.com User4={uuid}?>
+                                    <Section Name="BODY" Occ="1">
+                                        <Field Name="Message">Functional test XML document.</Field>
+                                        <Field Name="YourName">Automated test</Field>
+                                    </Section>
+                                </Statement>
+                            </XML-S>
+                            """
+                }
+            }
+        };
+        return JsonSerializer.Serialize(body);
+    }
+    
+    public static string CreatePdf(
+        string uuid,
+        string senderKennitala,
+        string ownerKennitala,
+        string styleSheetName,
+        DateTime date,
+        string pdfFileName)
+    {
+        
+        string pdfPath = Path.Combine(AppContext.BaseDirectory, pdfFileName);
+        string pdfBase64 = Convert.ToBase64String(File.ReadAllBytes(pdfPath));
+        
+        var body = new
+        {
+            SenderKennitala = senderKennitala,
+            DocumentTypeCode = "ARTSR",
+            DocumentStore = "Ark",
+            EffectiveDate = date,
+            StyleSheetName = styleSheetName,
+
+            Files = new[]
+            {
+                new 
+                {
+                    Id = uuid,
+                    Description = "This is a PDF document for testing",
+                    ReceiverKennitala = ownerKennitala,
+                    FileType = "PDF",
+                    File = pdfBase64
+                }
+            }
+        };
+        return JsonSerializer.Serialize(body);
+    }
     #endregion Helpers
 }
 
