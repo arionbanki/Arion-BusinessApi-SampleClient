@@ -3,68 +3,32 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 
 class Program
 {
-    #region Cards Sandbox Configuration
-    // Base path to cards sandbox API
+    #region Base Paths (not configurable)
     private static readonly string IOBWS_SANDBOX_BASE_PATH = "https://apigwsandbox.arionbanki.is/cards/api/v1";
-
-    // Config these sandbox variables to your needs
-    private static readonly string SANDBOX_ACCESS_TOKEN = "[Place your token from the developer portal in here]"; // you can create this token in the developer portal for your application
-    private static readonly string SANDBOX_API_KEY = "[Place your ApiKey from developer portal here]";
-    private static readonly string SANDBOX_CARD_ID = "[Place your sandbox card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
-    #endregion
-
-    #region Cards Live Configuration
-    // Base path to cards sandbox API
     private static readonly string IOBWS_LIVE_BASE_PATH = "https://apigw.arionbanki.is/cards/api/v1";
-
-    private static readonly string CARD_ID = "[Place your card id here]"; // this is returned from endpoint /api/v1/cards "resourceId"
-    #endregion
-
-    #region Claims Live Configuration
-    // Base path to claims API
     private static readonly string IOBWS_CLAIMS_BASE_PATH = "https://apigw.arionbanki.is/claims/api/v1";
-
-    // Config these variables to your needs
-    private static readonly string CLAIM_ID = "[Place the claim id here]"; // this is returned from endpoint /api/v1/claims/{claimId} "resourceId"
-    private static readonly string BATCH_ID = "[Place the batch id here]"; // this is returned from endpoint /api/v1/batches/{batchId} "resourceId"
-    private static readonly string DATE_FROM = "[Place the date from here]"; // this is the date from when records will be taken "YYYY-mm-dd"
-    private static readonly string DATE_TO = "[Place the date to here]"; // this is the date from when records will be taken "YYYY-mm-dd"
-    #endregion
-    
-    #region Documents Live Configuration
-    // Base path to claims API
     private static readonly string IOBWS_DOCUMENTS_BASE_PATH = "https://apigw.arionbanki.is/documents/api/v1";
-
-    // Config these variables to your needs
-    private static readonly string DOCUMENT_ID = "[Place the document id here]"; // The Id of the document you are managing
-    private static readonly string OWNER_ID = "[Place the owner id here]"; // Kennitala of the owner of the document
-    private static readonly string SENDER_ID = "[Place the sender id here]"; // Kennitala of the sender of the document
-    private static readonly string DOCUMENT_KEY = "[Place the document key here]"; // Key to the document
-    private static readonly string DOCUMENT_KEY_TYPE = "[Place the document key type here]"; // Document key type, one of these: Claim, CreditTransfer, PaymentRequest
-    private static readonly string DOCUMENT_STORE = "[Place the document store here]"; // Document store, the location where the document is stored, one of these: Ark, RBS
-    private static readonly string DOCUMENT_CATEGORY = "[Place the document category here]"; // Document category, one of these: AccountStatement, PaymentForm, Bill, CreditCard, Payslip, Password, InterestNote, SalarySlip, TransactionStatement, PaymentNotification, Report, Receipt, Notification, TimeSheet, CollectionLetter, WarningLetter, Reminder, Other
-    private static readonly string DOCUMENT_DATE_FROM = "[Place the date from here]"; // this is the date from when documents will be queried "YYYY-mm-dd"
-    private static readonly string DOCUMENT_DATE_TO = "[Place the date to here]"; // this is the date from when documents will be queried "YYYY-mm-dd"
-    private static readonly string DOCUMENT_ORDERING = "[Place the ordering here]"; // DESC or ASC
-    private static readonly string STYLE_SHEET_NAME = "[Place the style sheet name here]"; // Style sheet name for the document.
+    private static readonly string AUTH_TOKEN_URL = "https://apigw.arionbanki.is/oauth/v2/oauth-token";
     #endregion
 
-    #region Auth Configuration
-    // Authorization API
-    private static readonly string AUTH_TOKEN_URL = "https://apigw.arionbanki.is/oauth/v2/oauth-token"; // url to oauth token service
-    private static readonly string CLIENT_ID = "[Place client id here]";
-    private static readonly string CLIENT_SECRET = "[Place client secret here]";
-    private static readonly string CLIENT_SCOPES = "[Place client scopes here]";
+    // Configuration loaded from appsettings.json
+    private static IConfiguration _config = null!;
 
-    // UserApplication api key obtained from Developer Portal
-    private static readonly string APIKEY = "[Place api key here]";
-    #endregion
+    // Helper to read a config value (throws if missing or empty)
+    private static string Cfg(string key) =>
+        _config[key] ?? throw new InvalidOperationException($"Missing configuration value: '{key}'");
 
     static async Task Main(string[] args)
     {
+        _config = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+            .Build();
+
         bool showMenu = true;
         while (showMenu)
         {
@@ -195,7 +159,7 @@ class Program
     private static async Task SandboxGetCardsFromId()
     {
         // Build Request
-        string cardId = SANDBOX_CARD_ID;
+        string cardId = Cfg("CardsSandbox:CardId");
 
         // Api call
         var client = SetupHttpSandboxClient();
@@ -207,7 +171,7 @@ class Program
     private static async Task SandboxGetCardBalances()
     {
         // Build Request
-        string cardid = SANDBOX_CARD_ID;
+        string cardid = Cfg("CardsSandbox:CardId");
         DateTime today = DateTime.UtcNow.AddDays(-30);
 
         // Api call
@@ -220,7 +184,7 @@ class Program
     private static async Task SandboxGetCardTransactions()
     {
         // Build Request
-        string cardid = SANDBOX_CARD_ID;
+        string cardid = Cfg("CardsSandbox:CardId");
         string bookingStatus = "booked";
         DateTime dateFrom = DateTime.UtcNow.AddDays(-30);
         DateTime dateTo = DateTime.UtcNow;
@@ -251,7 +215,7 @@ class Program
     private static async Task LiveGetCardsFromId()
     {
         // Build Request
-        string cardId = CARD_ID;
+        string cardId = Cfg("CardsLive:CardId");
 
         // Api call
         var client = SetupHttpSandboxClient();
@@ -263,7 +227,7 @@ class Program
     private static async Task LiveGetCardBalances()
     {
         // Build Request
-        string cardid = CARD_ID;
+        string cardid = Cfg("CardsLive:CardId");
         DateTime today = DateTime.UtcNow.AddDays(-30);
 
         // Api call
@@ -276,7 +240,7 @@ class Program
     private static async Task LiveGetCardTransactions()
     {
         // Build Request
-        string cardid = CARD_ID;
+        string cardid = Cfg("CardsLive:CardId");
         string bookingStatus = "booked";
         DateTime dateFrom = DateTime.UtcNow.AddDays(-30);
         DateTime dateTo = DateTime.UtcNow;
@@ -296,7 +260,7 @@ class Program
     private static async Task LiveGetClaimFromId()
     {
         // Build Request
-        string claimId = CLAIM_ID;
+        string claimId = Cfg("Claims:ClaimId");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -308,7 +272,7 @@ class Program
     private static async Task LiveGetClaimFromIdHistory()
     {
         // Build Request
-        string claimId = CLAIM_ID;
+        string claimId = Cfg("Claims:ClaimId");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -320,7 +284,7 @@ class Program
     private static async Task LiveGetClaimFromIdTransactions()
     {
         // Build Request
-        string claimId = CLAIM_ID;
+        string claimId = Cfg("Claims:ClaimId");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -332,10 +296,13 @@ class Program
     private static async Task LiveGetClaims()
     {
         // Build Request
+        string dateFrom = Cfg("Claims:DateFrom");
+        string dateTo = Cfg("Claims:DateTo");
+        string claimId = Cfg("Claims:ClaimId");
 
         // Api call
         var client = await SetupHttpLiveClient();
-        var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={DATE_FROM}&dateTo={DATE_TO}&claimantId={CLAIM_ID[..10]}&page=1&itemsPerPage=500");
+        var response = await client.GetAsync($"{IOBWS_CLAIMS_BASE_PATH}/claims?dateFrom={dateFrom}&dateTo={dateTo}&claimantId={claimId[..10]}&page=1&itemsPerPage=500");
 
         // Results
         var result = await response.Content.ReadAsStringAsync();
@@ -343,7 +310,7 @@ class Program
     private static async Task LiveBatchFromId()
     {
         // Build Request
-        string batchId = BATCH_ID;
+        string batchId = Cfg("Claims:BatchId");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -357,11 +324,11 @@ class Program
     private static async Task LiveGetDocuments()
     {
         // Build Request
-        string senderKennitala = SENDER_ID;
-        string ownerKennitala = OWNER_ID;
-        string dateFrom = DOCUMENT_DATE_FROM;
-        string dateTo = DOCUMENT_DATE_TO;
-        string order = DOCUMENT_ORDERING;
+        string senderKennitala = Cfg("Documents:SenderId");
+        string ownerKennitala = Cfg("Documents:OwnerId");
+        string dateFrom = Cfg("Documents:DateFrom");
+        string dateTo = Cfg("Documents:DateTo");
+        string order = Cfg("Documents:Ordering");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -373,9 +340,9 @@ class Program
     private static async Task LiveGetDocumentByOwnerAndId()
     {
         // Build Request
-        string ownerKennitala = OWNER_ID;
-        string documentId = DOCUMENT_ID;
-        string documentStore = DOCUMENT_STORE; // Optional query parameter
+        string ownerKennitala = Cfg("Documents:OwnerId");
+        string documentId = Cfg("Documents:DocumentId");
+        string documentStore = Cfg("Documents:DocumentStore"); // Optional query parameter
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -387,8 +354,8 @@ class Program
     private static async Task LiveGetDocumentTypesBySender()
     {
         // Build Request
-        string senderKennitala = SENDER_ID;
-        string documentStore = DOCUMENT_STORE; // Optional query parameter
+        string senderKennitala = Cfg("Documents:SenderId");
+        string documentStore = Cfg("Documents:DocumentStore"); // Optional query parameter
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -401,11 +368,11 @@ class Program
     {
         // Build Request
         string uuid = Guid.NewGuid().ToString();
-        string senderKennitala = SENDER_ID;
-        string ownerKennitala = OWNER_ID;
-        string styleSheetName = STYLE_SHEET_NAME;
+        string senderKennitala = Cfg("Documents:SenderId");
+        string ownerKennitala = Cfg("Documents:OwnerId");
+        string styleSheetName = Cfg("Documents:StyleSheetName");
         DateTime date = DateTime.UtcNow;
-        string pdfFileName = "document.pdf"; // a document you have to add into the folder
+        string pdfFileName = "document.pdf"; // a document you have to add into the root folder of the project
         
         string jsonBody = CreatePdf(uuid, senderKennitala, ownerKennitala, styleSheetName, date, pdfFileName);
         var content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
@@ -421,9 +388,9 @@ class Program
     {
         // Build Request
         string uuid = Guid.NewGuid().ToString();
-        string senderKennitala = SENDER_ID;
-        string ownerKennitala = OWNER_ID;
-        string styleSheetName = STYLE_SHEET_NAME;
+        string senderKennitala = Cfg("Documents:SenderId");
+        string ownerKennitala = Cfg("Documents:OwnerId");
+        string styleSheetName = Cfg("Documents:StyleSheetName");
         string definitionName = "Synidaemi";
         DateTime date = DateTime.UtcNow;
         
@@ -440,8 +407,8 @@ class Program
     private static async Task LiveGetCrossReferenceByDocumentId()
     {
         // Build Request
-        string documentId = DOCUMENT_ID;
-        string documentStore = DOCUMENT_STORE;
+        string documentId = Cfg("Documents:DocumentId");
+        string documentStore = Cfg("Documents:DocumentStore");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -453,8 +420,8 @@ class Program
     private static async Task LiveGetCrossReferenceByKeyAndKeyType()
     {
         // Build Request
-        string key = DOCUMENT_KEY;
-        string keyType = DOCUMENT_KEY_TYPE;
+        string key = Cfg("Documents:DocumentKey");
+        string keyType = Cfg("Documents:DocumentKeyType");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -466,11 +433,11 @@ class Program
     private static async Task LivePostCrossReferences()
     {
         // Build Request
-        string key = DOCUMENT_KEY;
-        string keyType = DOCUMENT_KEY_TYPE;
-        string documentId = DOCUMENT_ID;
-        string documentStore = DOCUMENT_STORE;
-        string documentCategory = DOCUMENT_CATEGORY;
+        string key = Cfg("Documents:DocumentKey");
+        string keyType = Cfg("Documents:DocumentKeyType");
+        string documentId = Cfg("Documents:DocumentId");
+        string documentStore = Cfg("Documents:DocumentStore");
+        string documentCategory = Cfg("Documents:DocumentCategory");
         DateTime date = DateTime.UtcNow;
         string documentDescription = "Test document description";
         string externalEventId = "event_1234";
@@ -502,12 +469,12 @@ class Program
     private static async Task LivePutCrossReferences()
     {
         // Build Request
-        string documentId = DOCUMENT_ID;
+        string documentId = Cfg("Documents:DocumentId");
         // Edit any of the following values to update the document cross-reference
-        string key = DOCUMENT_KEY;
-        string keyType = DOCUMENT_KEY_TYPE;
-        string documentStore = DOCUMENT_STORE;
-        string documentCategory = DOCUMENT_CATEGORY;
+        string key = Cfg("Documents:DocumentKey");
+        string keyType = Cfg("Documents:DocumentKeyType");
+        string documentStore = Cfg("Documents:DocumentStore");
+        string documentCategory = Cfg("Documents:DocumentCategory");
         DateTime date = DateTime.UtcNow;
         string documentDescription = "Test document description";
         string externalEventId = "event_1234";
@@ -539,9 +506,9 @@ class Program
     private static async Task LiveDeleteCrossReference()
     {
         // Build Request
-        string documentId = DOCUMENT_ID;
-        string key = DOCUMENT_KEY;
-        string keyType = DOCUMENT_KEY_TYPE;
+        string documentId = Cfg("Documents:DocumentId");
+        string key = Cfg("Documents:DocumentKey");
+        string keyType = Cfg("Documents:DocumentKeyType");
 
         // Api call
         var client = await SetupHttpLiveClient();
@@ -559,12 +526,12 @@ class Program
         HttpClient httpClient = new();
 
         // Set headers
-        httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SANDBOX_API_KEY);
+        httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", Cfg("CardsSandbox:ApiKey"));
         httpClient.DefaultRequestHeaders.Add("xRequestId", Guid.NewGuid().ToString());
         httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 
         // Set bearer token
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SANDBOX_ACCESS_TOKEN); // Bearer token
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Cfg("CardsSandbox:AccessToken"));
 
         return httpClient;
     }
@@ -574,15 +541,15 @@ class Program
         var nvc = new List<KeyValuePair<string, string>>
         {
             new("grant_type", "client_credentials"),
-            new("client_id", CLIENT_ID),
-            new("client_secret", CLIENT_SECRET),
-            new("scope", CLIENT_SCOPES)
+            new("client_id", Cfg("Auth:ClientId")),
+            new("client_secret", Cfg("Auth:ClientSecret")),
+            new("scope", Cfg("Auth:Scopes"))
         };
 
         // Fetch certificate from store
         var store = new X509Store(StoreLocation.CurrentUser);
         store.Open(OpenFlags.ReadOnly);
-        var cers = store.Certificates.Find(X509FindType.FindBySubjectName, "[Enter subject name]", false);
+        var cers = store.Certificates.Find(X509FindType.FindBySubjectName, Cfg("Auth:CertificateSubjectName"), false);
 
         // Get token from curity
         var tokenClientHandler = new HttpClientHandler();
@@ -604,7 +571,7 @@ class Program
 
         // Set headers
         clientWithCertificate.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString());
-        clientWithCertificate.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", APIKEY);
+        clientWithCertificate.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", Cfg("Auth:ApiKey"));
         clientWithCertificate.DefaultRequestHeaders.Add("Accept", "application/json");
 
         // Set bearer token
@@ -684,7 +651,20 @@ class Program
         string pdfFileName)
     {
         
-        string pdfPath = Path.Combine(AppContext.BaseDirectory, pdfFileName);
+        // Fetching the pdf file from the root of the project.
+        string pdfPath = Path.Combine(Directory.GetCurrentDirectory(), pdfFileName);
+
+        // Fallback: when the code is running from bin/Debug/net8.0, walk up to project root
+        if (!File.Exists(pdfPath))
+        {
+            string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
+            pdfPath = Path.Combine(projectRoot, pdfFileName);
+        }
+
+        if (!File.Exists(pdfPath))
+        {
+            throw new FileNotFoundException($"PDF file not found at '{pdfPath}'");
+        }        
         string pdfBase64 = Convert.ToBase64String(File.ReadAllBytes(pdfPath));
         
         var body = new
