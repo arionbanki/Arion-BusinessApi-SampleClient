@@ -400,4 +400,4 @@ FodyWeavers.xsd
 .idea/
 
 # Local settings
-# appsettings.json
+appsettings.json
